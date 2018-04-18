@@ -1,4 +1,4 @@
-﻿<%
+<%
 ' JSON object class 3.7.0 May, 29th - 2016
 '
 ' Licence:
@@ -319,6 +319,19 @@ class JSONobject
 								value = value & vbtab
 							case "b"
 								value = value & vbback
+							case "\"
+								'for \\t we must have \t (not \tab)
+								'here we're resetting prevchar for next iteration
+								value = value & char
+								char = ""
+							case "u"
+								'\uxxxx support
+								if IsNumeric("&H" & mid(strJson, i + 1, 4)) then
+									value = value & ChrW("&H" & mid(strJson, i + 1, 4))
+									i = i + 4
+								else
+									value = value & char
+								end if
 							case else
 								value = value & char
 						end select
